@@ -1,6 +1,69 @@
 # AGENTS.md — MergenVision ModelLab / GStreamer GPU Hotpath Rules
 
 
+## 0. Mandatory Open-Source Reference Rule — Read Before Any Implementation
+
+Before implementing, refactoring, installing, choosing a model, building a TensorRT engine, writing architecture docs, or making any technical decision, the agent must first inspect the local open-source reference list:
+
+```text
+opensource/referenses.md
+
+This file is the repository’s local source-of-truth for approved open-source references, model candidates, DeepStream/GStreamer examples, TensorRT examples, Qdrant examples, and architecture patterns.
+
+The agent must not implement from its own assumptions before checking this file.
+
+Required workflow before implementation:
+
+Read opensource/referenses.md.
+Identify which references are relevant to the current task.
+Use DeepWiki / Exa / web search / Context7 to inspect those references.
+Compare the planned implementation against the reference patterns.
+Only then write code or final recommendations.
+
+If the file does not exist, stop and report:
+
+BLOCKER: opensource/referenses.md not found.
+
+Do not continue with implementation until the user confirms whether to create it or proceed without it.
+
+For every task, the final response must include:
+
+OPEN_SOURCE_REFERENCE_CHECK:
+- opensource/referenses.md found:
+- opensource/references.md found:
+- references read:
+- relevant references selected:
+- DeepWiki checks:
+- Exa/web checks:
+- Context7 docs:
+- adopted patterns:
+- adapted patterns:
+- rejected patterns:
+- reason for differences:
+- final verdict: pass / partial / fail
+
+No implementation checkpoint can be marked complete unless this reference check is done.
+
+If a task touches any of the following areas, reference checking is mandatory:
+
+GStreamer / DeepStream
+NVDEC / GPU video decode
+TensorRT
+SCRFD / RetinaFace / face detection
+ArcFace / face recognition
+model selection
+ONNX export
+TensorRT engine building
+static vs dynamic batch
+Qdrant vector search
+PostgreSQL metadata schema
+MinIO object storage
+tracking / ByteTrack / DeepSORT / BoT-SORT / Norfair
+video worker architecture
+Docker / multi-GPU deployment
+benchmark design
+validation reports
+
 SESSION RECONSTRUCTION AFTER COMPACTION / NEW AGENT
 
 If this is a new session, compacted context, resumed task, or the agent is unsure about the repo state:
