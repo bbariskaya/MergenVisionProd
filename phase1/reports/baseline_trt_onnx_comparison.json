@@ -1,0 +1,415 @@
+{
+  "generated_at": "2026-07-08T18:22:19+0000",
+  "repo": "/home/user/MergenVisionProd",
+  "task": "ONNX-vs-TRT runtime smoke and comparison",
+  "environment": {
+    "python": "/home/user/Workspace/mergenvision/backend/.venv/bin/python",
+    "tensorrt": "10.16.1.11",
+    "onnxruntime": "1.27.0",
+    "torch": "2.6.0+cu124",
+    "cuda_available": true,
+    "numpy": "2.2.6"
+  },
+  "input_artifacts": {
+    "det_onnx": {
+      "path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/det_10g.onnx",
+      "sha256": "5838f7fe053675b1c7a08b633df49e7af5495cee0493c7dcf6697200b85b5b91",
+      "size": 16923827
+    },
+    "rec_onnx": {
+      "path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/w600k_r50.onnx",
+      "sha256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+      "size": 174383860
+    },
+    "det_engine": {
+      "path": "/home/user/MergenVisionProd/phase1/artifacts/engines/buffalo_l/det_10g_b1_640_fp16.plan",
+      "sha256": "85cbfb523f67d9a65b7971239604278cd4b981c2891584aca861e05115845226",
+      "size": 9182172
+    },
+    "rec_engine": {
+      "path": "/home/user/MergenVisionProd/phase1/artifacts/engines/buffalo_l/w600k_r50_min1_opt8_max32_fp16.plan",
+      "sha256": "a1cab2f06f0dadba768df772e1342246738bbb00877710807a04c9c782f26ee6",
+      "size": 88468028
+    }
+  },
+  "detector_runtime": {
+    "input_shape": [
+      1,
+      3,
+      640,
+      640
+    ],
+    "engine_deserialized": true,
+    "runtime_executed": true,
+    "output_tensor_count": 9,
+    "output_shapes": {
+      "448": [
+        12800,
+        1
+      ],
+      "471": [
+        3200,
+        1
+      ],
+      "494": [
+        800,
+        1
+      ],
+      "451": [
+        12800,
+        4
+      ],
+      "474": [
+        3200,
+        4
+      ],
+      "497": [
+        800,
+        4
+      ],
+      "454": [
+        12800,
+        10
+      ],
+      "477": [
+        3200,
+        10
+      ],
+      "500": [
+        800,
+        10
+      ]
+    }
+  },
+  "detector_raw_comparison": [
+    {
+      "name": "448",
+      "role": "score",
+      "shape": [
+        12800,
+        1
+      ],
+      "max_abs_diff": 0.00024271011352539062,
+      "mean_abs_diff": 2.4968940124381334e-05,
+      "max_rel_diff": 0.030490605160593987,
+      "cosine_similarity": 0.9999778443702402,
+      "verdict": "pass"
+    },
+    {
+      "name": "451",
+      "role": "score",
+      "shape": [
+        12800,
+        4
+      ],
+      "max_abs_diff": 0.015077352523803711,
+      "mean_abs_diff": 0.0017777285538613796,
+      "max_rel_diff": 0.011638586409389973,
+      "cosine_similarity": 0.9999987070829934,
+      "verdict": "fail"
+    },
+    {
+      "name": "454",
+      "role": "score",
+      "shape": [
+        12800,
+        10
+      ],
+      "max_abs_diff": 0.012416243553161621,
+      "mean_abs_diff": 0.0012414760421961546,
+      "max_rel_diff": 178.3664093017578,
+      "cosine_similarity": 0.9999934846514056,
+      "verdict": "fail"
+    },
+    {
+      "name": "471",
+      "role": "bbox",
+      "shape": [
+        3200,
+        1
+      ],
+      "max_abs_diff": 0.00035768747329711914,
+      "mean_abs_diff": 3.4579810744617134e-05,
+      "max_rel_diff": 0.020708441734313965,
+      "cosine_similarity": 0.9999916635001267,
+      "verdict": "pass"
+    },
+    {
+      "name": "474",
+      "role": "bbox",
+      "shape": [
+        3200,
+        4
+      ],
+      "max_abs_diff": 0.014748096466064453,
+      "mean_abs_diff": 0.0017080440884456038,
+      "max_rel_diff": 0.005630019586533308,
+      "cosine_similarity": 0.999999425830237,
+      "verdict": "pass"
+    },
+    {
+      "name": "477",
+      "role": "bbox",
+      "shape": [
+        3200,
+        10
+      ],
+      "max_abs_diff": 0.010049402713775635,
+      "mean_abs_diff": 0.0012415278470143676,
+      "max_rel_diff": 81.38982391357422,
+      "cosine_similarity": 0.9999967659210761,
+      "verdict": "pass"
+    },
+    {
+      "name": "494",
+      "role": "kps",
+      "shape": [
+        800,
+        1
+      ],
+      "max_abs_diff": 0.00015342235565185547,
+      "mean_abs_diff": 3.5739019949687645e-05,
+      "max_rel_diff": 0.010183404199779034,
+      "cosine_similarity": 0.9999956472598779,
+      "verdict": "pass"
+    },
+    {
+      "name": "497",
+      "role": "kps",
+      "shape": [
+        800,
+        4
+      ],
+      "max_abs_diff": 0.00822305679321289,
+      "mean_abs_diff": 0.0007768827490508556,
+      "max_rel_diff": 0.007530368864536285,
+      "cosine_similarity": 0.9999996631292013,
+      "verdict": "pass"
+    },
+    {
+      "name": "500",
+      "role": "kps",
+      "shape": [
+        800,
+        10
+      ],
+      "max_abs_diff": 0.005892574787139893,
+      "mean_abs_diff": 0.0005560214049182832,
+      "max_rel_diff": 3.3499701023101807,
+      "cosine_similarity": 0.999998962060147,
+      "verdict": "pass"
+    }
+  ],
+  "detector_decoded_comparison": {
+    "status": "pass",
+    "samples": [
+      {
+        "status": "pass",
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Cook/AJ_Cook_0001.jpg",
+        "score_diff": 0.0001990795135498047,
+        "top_iou": 0.9995706649685981,
+        "landmark_mae": 0.008712005615234376,
+        "ort_top_score": 0.8090775012969971,
+        "trt_top_score": 0.8092765808105469,
+        "ort_detections": 1,
+        "trt_detections": 1
+      },
+      {
+        "status": "pass",
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Lamas/AJ_Lamas_0001.jpg",
+        "score_diff": 2.300739288330078e-05,
+        "top_iou": 0.9984713314002558,
+        "landmark_mae": 0.01487579345703125,
+        "ort_top_score": 0.831392765045166,
+        "trt_top_score": 0.8314157724380493,
+        "ort_detections": 1,
+        "trt_detections": 1
+      },
+      {
+        "status": "pass",
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/Aaron_Eckhart/Aaron_Eckhart_0001.jpg",
+        "score_diff": 0.00017690658569335938,
+        "top_iou": 0.998318859689416,
+        "landmark_mae": 0.008917236328125,
+        "ort_top_score": 0.853979229927063,
+        "trt_top_score": 0.8541561365127563,
+        "ort_detections": 1,
+        "trt_detections": 1
+      }
+    ]
+  },
+  "recognizer_runtime": {
+    "batch_sizes_tested": [
+      1,
+      2,
+      8,
+      32
+    ],
+    "engine_deserialized": true,
+    "runtime_executed": true
+  },
+  "recognizer_embedding_comparison": [
+    {
+      "status": "pass",
+      "batch_size": 1,
+      "input_shape": [
+        1,
+        3,
+        112,
+        112
+      ],
+      "output_shape": [
+        1,
+        512
+      ],
+      "raw_max_abs_diff": 0.01393735408782959,
+      "raw_mean_abs_diff": 0.003262614831328392,
+      "raw_max_rel_diff": 13.481743812561035,
+      "norm_min_cosine": 0.9999546408653259,
+      "norm_mean_cosine": 0.9999546408653259,
+      "norm_max_cosine": 0.9999546408653259,
+      "norm_max_abs_diff": 0.001483045518398285,
+      "norm_mean_abs_diff": 0.00033330940641462803,
+      "ort_raw_norms_mean": 9.727181434631348,
+      "trt_raw_norms_mean": 9.717391014099121
+    },
+    {
+      "status": "pass",
+      "batch_size": 2,
+      "input_shape": [
+        2,
+        3,
+        112,
+        112
+      ],
+      "output_shape": [
+        2,
+        512
+      ],
+      "raw_max_abs_diff": 0.01393735408782959,
+      "raw_mean_abs_diff": 0.0029978055972605944,
+      "raw_max_rel_diff": 84.86846923828125,
+      "norm_min_cosine": 0.9999546408653259,
+      "norm_mean_cosine": 0.9999611377716064,
+      "norm_max_cosine": 0.9999676942825317,
+      "norm_max_abs_diff": 0.001483045518398285,
+      "norm_mean_abs_diff": 0.00031069127726368606,
+      "ort_raw_norms_mean": 9.606063842773438,
+      "trt_raw_norms_mean": 9.600704193115234
+    },
+    {
+      "status": "pass",
+      "batch_size": 8,
+      "input_shape": [
+        8,
+        3,
+        112,
+        112
+      ],
+      "output_shape": [
+        8,
+        512
+      ],
+      "raw_max_abs_diff": 0.01791432499885559,
+      "raw_mean_abs_diff": 0.003306671977043152,
+      "raw_max_rel_diff": 84.86846923828125,
+      "norm_min_cosine": 0.9999270439147949,
+      "norm_mean_cosine": 0.9999526739120483,
+      "norm_max_cosine": 0.9999676942825317,
+      "norm_max_abs_diff": 0.0017465949058532715,
+      "norm_mean_abs_diff": 0.0003407079784665257,
+      "ort_raw_norms_mean": 9.595468521118164,
+      "trt_raw_norms_mean": 9.59440803527832
+    },
+    {
+      "status": "pass",
+      "batch_size": 32,
+      "input_shape": [
+        32,
+        3,
+        112,
+        112
+      ],
+      "output_shape": [
+        32,
+        512
+      ],
+      "raw_max_abs_diff": 0.027438268065452576,
+      "raw_mean_abs_diff": 0.0036628544330596924,
+      "raw_max_rel_diff": 84.86846923828125,
+      "norm_min_cosine": 0.9998646974563599,
+      "norm_mean_cosine": 0.9999452829360962,
+      "norm_max_cosine": 0.9999676942825317,
+      "norm_max_abs_diff": 0.002881585620343685,
+      "norm_mean_abs_diff": 0.00036469945916906,
+      "ort_raw_norms_mean": 9.924695014953613,
+      "trt_raw_norms_mean": 9.922447204589844
+    }
+  ],
+  "recognizer_batch_position_invariance": {
+    "status": "pass",
+    "cases": [
+      {
+        "batch_size": 1,
+        "position": 0,
+        "l2_diff": 0.0,
+        "cosine": 1.0000001192092896,
+        "verdict": "pass"
+      },
+      {
+        "batch_size": 2,
+        "position": 1,
+        "l2_diff": 0.0,
+        "cosine": 1.0000001192092896,
+        "verdict": "pass"
+      },
+      {
+        "batch_size": 8,
+        "position": 7,
+        "l2_diff": 0.0,
+        "cosine": 1.0000001192092896,
+        "verdict": "pass"
+      },
+      {
+        "batch_size": 32,
+        "position": 31,
+        "l2_diff": 0.0,
+        "cosine": 1.0000001192092896,
+        "verdict": "pass"
+      }
+    ]
+  },
+  "verdict": {
+    "overall": "partial",
+    "detector_raw": "fail",
+    "detector_decoded": "pass",
+    "recognizer": "pass",
+    "batch_invariance": "pass"
+  },
+  "what_is_proven": {
+    "both_engines_deserialize": true,
+    "detector_runs_onnx_and_trt": true,
+    "recognizer_runs_dynamic_batch_1_2_8_32": true,
+    "recognizer_onnx_trt_outputs_close": true,
+    "recognizer_batch_position_invariant_under_trt": true,
+    "detector_decoded_outputs_match": true
+  },
+  "what_is_not_proven": [
+    "Full LFW accuracy",
+    "Video detector sanity",
+    "Qdrant search correctness",
+    "DeepStream pipeline integration",
+    "Throughput/latency benchmarks"
+  ],
+  "test_inputs": {
+    "detector_synthetic_seed": 20260708,
+    "detector_real_images": [
+      "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Cook/AJ_Cook_0001.jpg",
+      "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Lamas/AJ_Lamas_0001.jpg",
+      "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/Aaron_Eckhart/Aaron_Eckhart_0001.jpg"
+    ],
+    "recognizer_synthetic_seed": 20260708,
+    "recognizer_input_strategy": "deterministic synthetic float32 tensors"
+  },
+  "next_recommended_action": "APPROVED \u2014 START LFW BASELINE VALIDATION AND ENROLLMENT BENCHMARK ONLY"
+}

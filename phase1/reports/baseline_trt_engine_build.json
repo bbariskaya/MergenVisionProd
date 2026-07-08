@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-07-08T18:04:00+00:00",
+  "repo": "/home/user/MergenVisionProd",
+  "task": "Baseline TensorRT engine build for InsightFace buffalo_l stack",
+  "build_status": "blocked",
+  "input_models": {
+    "detector": {
+      "role": "detector",
+      "onnx_path": "artifacts/models/insightface/buffalo_l/det_10g.onnx",
+      "sha256": "5838f7fe053675b1c7a08b633df49e7af5495cee0493c7dcf6697200b85b5b91",
+      "size_bytes": 16923827,
+      "onnx_input_shape": ["1", "3", "?", "?"],
+      "recommended_profile": {
+        "min": "1x3x640x640",
+        "opt": "1x3x640x640",
+        "max": "1x3x640x640"
+      },
+      "precision": "fp16",
+      "intended_engine_path": "phase1/artifacts/engines/buffalo_l/det_10g_b1_640_fp16.plan"
+    },
+    "recognizer": {
+      "role": "recognizer",
+      "onnx_path": "artifacts/models/insightface/buffalo_l/w600k_r50.onnx",
+      "sha256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+      "size_bytes": 174383860,
+      "onnx_input_shape": ["None", "3", "112", "112"],
+      "recommended_profile": {
+        "min": "1x3x112x112",
+        "opt": "8x3x112x112",
+        "max": "32x3x112x112"
+      },
+      "precision": "fp16",
+      "intended_engine_path": "phase1/artifacts/engines/buffalo_l/w600k_r50_min1_opt8_max32_fp16.plan"
+    }
+  },
+  "environment": {
+    "date_time": "2026-07-08T18:04:00+00:00",
+    "host": "ubuntu",
+    "gpu_name": "Quadro RTX 8000",
+    "driver_version": "580.105.08",
+    "cuda_version": "13.0",
+    "tensorrt_python_version": "10.16.1.11 (in /home/user/Workspace/mergenvision/backend/.venv only)",
+    "trtexec_path": null,
+    "docker_version": "29.1.5",
+    "disk_available_gb": 983
+  },
+  "commands": {
+    "detector_command": "trtexec --onnx=artifacts/models/insightface/buffalo_l/det_10g.onnx --saveEngine=phase1/artifacts/engines/buffalo_l/det_10g_b1_640_fp16.plan --fp16 --minShapes=input.1:1x3x640x640 --optShapes=input.1:1x3x640x640 --maxShapes=input.1:1x3x640x640 --timingCacheFile=phase1/artifacts/timing_cache/buffalo_l.cache",
+    "recognizer_command": "trtexec --onnx=artifacts/models/insightface/buffalo_l/w600k_r50.onnx --saveEngine=phase1/artifacts/engines/buffalo_l/w600k_r50_min1_opt8_max32_fp16.plan --fp16 --minShapes=input.1:1x3x112x112 --optShapes=input.1:8x3x112x112 --maxShapes=input.1:32x3x112x112 --timingCacheFile=phase1/artifacts/timing_cache/buffalo_l.cache"
+  },
+  "engine_outputs": [],
+  "logs": [],
+  "timings_seconds": {},
+  "build_status_reason": "trtexec binary not found on host; TensorRT Python API available only in an existing old-project virtual environment.",
+  "warnings": [
+    "trtexec binary is missing from PATH and from /usr, /opt, /usr/local.",
+    "TensorRT Python import fails in system Python but succeeds in /home/user/Workspace/mergenvision/backend/.venv (tensorrt 10.16.1.11).",
+    "No engine files were produced; build_status is 'blocked' rather than 'failed' because the environment lacks the requested CLI tool, not because the ONNX model failed."
+  ],
+  "errors": [
+    "trtexec not found on host.",
+    "Cannot execute the requested trtexec-based build commands."
+  ],
+  "what_is_proven": {
+    "source_models_present": true,
+    "sha256_match_previous_reports": true,
+    "gpu_available_and_idle": true,
+    "official_tensorrt_dynamic_shape_flags_verified": true,
+    "build_strategy_documented": true
+  },
+  "what_is_not_proven": {
+    "detector_tensorrt_engine_builds": true,
+    "recognizer_tensorrt_engine_builds": true,
+    "fp16_engine_correctness": true,
+    "dynamic_batch_recognizer_runtime": true,
+    "batch_invariance_under_tensorrt": true,
+    "onnx_vs_trt_numerical_equivalence": true
+  },
+  "next_recommended_action": "CHOOSE ONE: (1) APPROVED — PROCEED WITH PYTHON TENSORRT BUILDER USING EXISTING VENV, (2) APPROVED — PULL NVIDIA TENSORRT DOCKER IMAGE AND BUILD WITH CONTAINERIZED trtexec, (3) INSTALL TENSORRT SDK ON HOST AND RE-RUN THIS CHECKPOINT."
+}

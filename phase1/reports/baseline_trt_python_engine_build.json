@@ -1,0 +1,120 @@
+{
+  "generated_at": "2026-07-08T18:11:19+0000",
+  "repo": "/home/user/MergenVisionProd",
+  "task": "Build TensorRT engines with Python API (trtexec fallback)",
+  "previous_blocker": {
+    "report_path": "phase1/reports/BASELINE_TENSORRT_ENGINE_BUILD_REPORT.md",
+    "json_path": "phase1/reports/baseline_trt_engine_build.json",
+    "reason": "trtexec binary not found on host",
+    "trtexec_path": null
+  },
+  "python_interpreter": "/home/user/Workspace/mergenvision/backend/.venv/bin/python",
+  "tensorrt_version": "10.16.1.11",
+  "gpu_environment": {
+    "nvidia_smi": null,
+    "cuda_visible_devices": null,
+    "nvidia_smi_error": "CalledProcessError(2, ['nvidia-smi', '-q', '-d', 'DRIVER'])"
+  },
+  "input_models": [
+    {
+      "role": "detector",
+      "onnx_path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/det_10g.onnx",
+      "onnx_sha256": "5838f7fe053675b1c7a08b633df49e7af5495cee0493c7dcf6697200b85b5b91",
+      "onnx_size_bytes": 16923827
+    },
+    {
+      "role": "recognizer",
+      "onnx_path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/w600k_r50.onnx",
+      "onnx_sha256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+      "onnx_size_bytes": 174383860
+    }
+  ],
+  "engine_outputs": [
+    {
+      "role": "detector",
+      "onnx_path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/det_10g.onnx",
+      "engine_path": "/home/user/MergenVisionProd/phase1/artifacts/engines/buffalo_l/det_10g_b1_640_fp16.plan",
+      "engine_size_bytes": 9182172,
+      "engine_sha256": "85cbfb523f67d9a65b7971239604278cd4b981c2891584aca861e05115845226",
+      "input_profile": {
+        "min": [
+          1,
+          3,
+          640,
+          640
+        ],
+        "opt": [
+          1,
+          3,
+          640,
+          640
+        ],
+        "max": [
+          1,
+          3,
+          640,
+          640
+        ]
+      },
+      "precision": "fp16",
+      "workspace_bytes": 4294967296,
+      "build_status": "pass",
+      "build_duration_seconds": 54.57,
+      "log_path": "/home/user/MergenVisionProd/phase1/artifacts/engine_logs/det_10g_python_trt_build.log",
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "role": "recognizer",
+      "onnx_path": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/w600k_r50.onnx",
+      "engine_path": "/home/user/MergenVisionProd/phase1/artifacts/engines/buffalo_l/w600k_r50_min1_opt8_max32_fp16.plan",
+      "engine_size_bytes": 88468028,
+      "engine_sha256": "a1cab2f06f0dadba768df772e1342246738bbb00877710807a04c9c782f26ee6",
+      "input_profile": {
+        "min": [
+          1,
+          3,
+          112,
+          112
+        ],
+        "opt": [
+          8,
+          3,
+          112,
+          112
+        ],
+        "max": [
+          32,
+          3,
+          112,
+          112
+        ]
+      },
+      "precision": "fp16",
+      "workspace_bytes": 4294967296,
+      "build_status": "pass",
+      "build_duration_seconds": 80.578,
+      "log_path": "/home/user/MergenVisionProd/phase1/artifacts/engine_logs/w600k_r50_python_trt_build.log",
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "build_status": "pass",
+  "what_is_proven": {
+    "source_models_present_and_hashes_match": true,
+    "tensorrt_python_imports_and_parses_models": true,
+    "detector_engine_built": true,
+    "recognizer_engine_built": true,
+    "fp16_enabled_for_fast_platforms": true,
+    "detector_static_batch_1_640x640_profile": true,
+    "recognizer_dynamic_min1_opt8_max32_profile": true
+  },
+  "what_is_not_proven": {
+    "tensorrt_runtime_inference": true,
+    "onnx_vs_trt_numerical_equivalence": true,
+    "recognizer_batch_invariance": true,
+    "detector_batch_because_engine_is_static_batch_1": true,
+    "fp16_accuracy_against_fp32": true
+  },
+  "next_recommended_action": "APPROVED \u2014 START BASELINE TENSORRT SMOKE AND ONNX VS TRT COMPARISON ONLY"
+}

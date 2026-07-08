@@ -1,0 +1,246 @@
+{
+  "report_title": "Baseline ONNX Runtime Smoke Report",
+  "generated_at": "2026-07-08T17:50:25.816741+00:00",
+  "purpose": "ONNX Runtime smoke test for the InsightFace buffalo_l baseline stack. No TensorRT engine and no full benchmark.",
+  "detector": {
+    "model": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/det_10g.onnx",
+    "input_size": 640,
+    "confidence_threshold": 0.5,
+    "nms_threshold": 0.4,
+    "samples": [
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Cook/AJ_Cook_0001.jpg",
+        "image_size": [
+          250,
+          250
+        ],
+        "detections": [
+          {
+            "bbox": [
+              87.96589660644531,
+              58.189552307128906,
+              177.19662475585938,
+              198.94676208496094
+            ],
+            "landmarks": [
+              [
+                104.48580932617188,
+                114.04312896728516
+              ],
+              [
+                147.3950958251953,
+                114.08301544189453
+              ],
+              [
+                119.69666290283203,
+                135.67408752441406
+              ],
+              [
+                105.60580444335938,
+                158.8214569091797
+              ],
+              [
+                144.58201599121094,
+                159.3977508544922
+              ]
+            ],
+            "score": 0.8090775012969971
+          }
+        ],
+        "detection_count": 1
+      },
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Lamas/AJ_Lamas_0001.jpg",
+        "image_size": [
+          250,
+          250
+        ],
+        "detections": [
+          {
+            "bbox": [
+              64.67194366455078,
+              59.930904388427734,
+              169.59469604492188,
+              198.3795623779297
+            ],
+            "landmarks": [
+              [
+                97.81634521484375,
+                114.07188415527344
+              ],
+              [
+                148.4456787109375,
+                114.62847900390625
+              ],
+              [
+                128.4100341796875,
+                132.71815490722656
+              ],
+              [
+                96.87651062011719,
+                156.1872100830078
+              ],
+              [
+                149.12315368652344,
+                156.32785034179688
+              ]
+            ],
+            "score": 0.831392765045166
+          }
+        ],
+        "detection_count": 1
+      },
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/Aaron_Eckhart/Aaron_Eckhart_0001.jpg",
+        "image_size": [
+          250,
+          250
+        ],
+        "detections": [
+          {
+            "bbox": [
+              82.02334594726562,
+              63.88378143310547,
+              167.58285522460938,
+              188.40533447265625
+            ],
+            "landmarks": [
+              [
+                107.27450561523438,
+                108.82427978515625
+              ],
+              [
+                147.4657440185547,
+                108.89801025390625
+              ],
+              [
+                129.10890197753906,
+                142.35147094726562
+              ],
+              [
+                111.26060485839844,
+                157.34078979492188
+              ],
+              [
+                141.9832305908203,
+                157.570068359375
+              ]
+            ],
+            "score": 0.853979229927063
+          }
+        ],
+        "detection_count": 1
+      }
+    ]
+  },
+  "recognizer": {
+    "model": "/home/user/MergenVisionProd/artifacts/models/insightface/buffalo_l/w600k_r50.onnx",
+    "input_size": 112,
+    "samples": [
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Cook/AJ_Cook_0001.jpg",
+        "best_score": 0.8090775012969971,
+        "embedding_dim": 512,
+        "batch_shapes": {
+          "1": [
+            1,
+            512
+          ],
+          "2": [
+            2,
+            512
+          ],
+          "8": [
+            8,
+            512
+          ]
+        },
+        "mean_l2_norm": 20.069223403930664,
+        "min_l2_norm": 20.069223403930664,
+        "max_l2_norm": 20.069223403930664,
+        "manual_normalized_mean_l2_norm": 0.9999999403953552,
+        "batch_invariance": {
+          "batch_1_max_l2_diff": 0.0,
+          "batch_2_max_l2_diff": 0.0,
+          "batch_8_max_l2_diff": 0.0
+        },
+        "same_crop_cosine": 0.9999999999999999
+      },
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/AJ_Lamas/AJ_Lamas_0001.jpg",
+        "best_score": 0.831392765045166,
+        "embedding_dim": 512,
+        "batch_shapes": {
+          "1": [
+            1,
+            512
+          ],
+          "2": [
+            2,
+            512
+          ],
+          "8": [
+            8,
+            512
+          ]
+        },
+        "mean_l2_norm": 23.559057235717773,
+        "min_l2_norm": 23.559057235717773,
+        "max_l2_norm": 23.559057235717773,
+        "manual_normalized_mean_l2_norm": 1.0,
+        "batch_invariance": {
+          "batch_1_max_l2_diff": 0.0,
+          "batch_2_max_l2_diff": 0.0,
+          "batch_8_max_l2_diff": 0.0
+        },
+        "same_crop_cosine": 1.0
+      },
+      {
+        "image": "/home/user/MergenVisionProd/artifacts/datasets/lfw/lfw-deepfunneled/Aaron_Eckhart/Aaron_Eckhart_0001.jpg",
+        "best_score": 0.853979229927063,
+        "embedding_dim": 512,
+        "batch_shapes": {
+          "1": [
+            1,
+            512
+          ],
+          "2": [
+            2,
+            512
+          ],
+          "8": [
+            8,
+            512
+          ]
+        },
+        "mean_l2_norm": 26.542633056640625,
+        "min_l2_norm": 26.542633056640625,
+        "max_l2_norm": 26.542633056640625,
+        "manual_normalized_mean_l2_norm": 1.0,
+        "batch_invariance": {
+          "batch_1_max_l2_diff": 0.0,
+          "batch_2_max_l2_diff": 0.0,
+          "batch_8_max_l2_diff": 0.0
+        },
+        "same_crop_cosine": 1.0000000000000002
+      }
+    ]
+  },
+  "cross_face_cosine_matrix": {
+    "AJ_Cook_0001.jpg": {
+      "AJ_Cook_0001.jpg": 0.9999999999999999,
+      "AJ_Lamas_0001.jpg": 0.0035856840176504384,
+      "Aaron_Eckhart_0001.jpg": 0.06385676724995241
+    },
+    "AJ_Lamas_0001.jpg": {
+      "AJ_Cook_0001.jpg": 0.0035856840176504384,
+      "AJ_Lamas_0001.jpg": 1.0,
+      "Aaron_Eckhart_0001.jpg": -0.02043569568905972
+    },
+    "Aaron_Eckhart_0001.jpg": {
+      "AJ_Cook_0001.jpg": 0.06385676724995241,
+      "AJ_Lamas_0001.jpg": -0.02043569568905972,
+      "Aaron_Eckhart_0001.jpg": 1.0000000000000002
+    }
+  }
+}
