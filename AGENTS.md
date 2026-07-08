@@ -1,5 +1,41 @@
 # AGENTS.md — MergenVision ModelLab / GStreamer GPU Hotpath Rules
 
+
+SESSION RECONSTRUCTION AFTER COMPACTION / NEW AGENT
+
+If this is a new session, compacted context, resumed task, or the agent is unsure about the repo state:
+
+1. Do not continue from memory only.
+2. Use codebase-memory-mcp first.
+3. Inspect the real filesystem/repo.
+4. Read source-of-truth docs.
+5. Reconstruct current status before planning or coding.
+6. Output SESSION_RECONSTRUCTION.
+7. Only then continue.
+
+Required output:
+
+SESSION_RECONSTRUCTION:
+- current repo:
+- current phase:
+- source-of-truth docs read:
+- previous reports read:
+- old reference repos inspected:
+- last completed checkpoint:
+- next intended checkpoint:
+- current Docker status:
+- current DB/Alembic status:
+- current API route status:
+- current GPU/TensorRT/model status:
+- current GStreamer/DeepStream status:
+- current Qdrant/MinIO/PostgreSQL status:
+- tests/lint/typecheck status:
+- benchmark status:
+- what is proven:
+- what is assumed:
+- blockers:
+- files likely relevant for this task:
+
 This repository exists to design, validate, and eventually implement the final clean MergenVision video face-recognition architecture.
 
 The goal is not to build random code quickly.
