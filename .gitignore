@@ -1,0 +1,75 @@
+# Environment
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Node / frontend
+node_modules/
+.next/
+dist/
+*.tsbuildinfo
+
+# Artifacts and heavy binary files
+artifacts/models/
+artifacts/engines/
+artifacts/benchmarks/
+artifacts/validation/
+artifacts/datasets/
+artifacts/videos/
+artifacts/crops/
+artifacts/lfw/
+artifacts/widerface/
+*.plan
+*.engine
+*.onnx
+*.pth
+*.pt
+*.ckpt
+*.zip
+*.tar
+*.tar.gz
+*.safetensors
+
+# Media files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tiff
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.env.docker

@@ -1,152 +1,30 @@
-# AGENTS.md — MergenVision ModelLab / GStreamer GPU Hotpath Rules
+# AGENTS.md — MergenVision Final Production Repository Agent Governance
 
+This file is mandatory instruction for every AI coding agent working on `/home/user/MergenVisionProd`.
 
-## 0. Mandatory Open-Source Reference Rule — Read Before Any Implementation
+Read this file **before planning, writing, reviewing, testing, or modifying anything** in this repository.
 
-Before implementing, refactoring, installing, choosing a model, building a TensorRT engine, writing architecture docs, or making any technical decision, the agent must first inspect the local open-source reference list:
-
-```text
-opensource/referenses.md
-
-This file is the repository’s local source-of-truth for approved open-source references, model candidates, DeepStream/GStreamer examples, TensorRT examples, Qdrant examples, and architecture patterns.
-
-The agent must not implement from its own assumptions before checking this file.
-
-Required workflow before implementation:
-
-Read opensource/referenses.md.
-Identify which references are relevant to the current task.
-Use DeepWiki / Exa / web search / Context7 to inspect those references.
-Compare the planned implementation against the reference patterns.
-Only then write code or final recommendations.
-
-If the file does not exist, stop and report:
-
-BLOCKER: opensource/referenses.md not found.
-
-Do not continue with implementation until the user confirms whether to create it or proceed without it.
-
-For every task, the final response must include:
-
-OPEN_SOURCE_REFERENCE_CHECK:
-- opensource/referenses.md found:
-- opensource/references.md found:
-- references read:
-- relevant references selected:
-- DeepWiki checks:
-- Exa/web checks:
-- Context7 docs:
-- adopted patterns:
-- adapted patterns:
-- rejected patterns:
-- reason for differences:
-- final verdict: pass / partial / fail
-
-No implementation checkpoint can be marked complete unless this reference check is done.
-
-If a task touches any of the following areas, reference checking is mandatory:
-
-GStreamer / DeepStream
-NVDEC / GPU video decode
-TensorRT
-SCRFD / RetinaFace / face detection
-ArcFace / face recognition
-model selection
-ONNX export
-TensorRT engine building
-static vs dynamic batch
-Qdrant vector search
-PostgreSQL metadata schema
-MinIO object storage
-tracking / ByteTrack / DeepSORT / BoT-SORT / Norfair
-video worker architecture
-Docker / multi-GPU deployment
-benchmark design
-validation reports
-
-SESSION RECONSTRUCTION AFTER COMPACTION / NEW AGENT
-
-If this is a new session, compacted context, resumed task, or the agent is unsure about the repo state:
-
-1. Do not continue from memory only.
-2. Use codebase-memory-mcp first.
-3. Inspect the real filesystem/repo.
-4. Read source-of-truth docs.
-5. Reconstruct current status before planning or coding.
-6. Output SESSION_RECONSTRUCTION.
-7. Only then continue.
-
-Required output:
-
-SESSION_RECONSTRUCTION:
-- current repo:
-- current phase:
-- source-of-truth docs read:
-- previous reports read:
-- old reference repos inspected:
-- last completed checkpoint:
-- next intended checkpoint:
-- current Docker status:
-- current DB/Alembic status:
-- current API route status:
-- current GPU/TensorRT/model status:
-- current GStreamer/DeepStream status:
-- current Qdrant/MinIO/PostgreSQL status:
-- tests/lint/typecheck status:
-- benchmark status:
-- what is proven:
-- what is assumed:
-- blockers:
-- files likely relevant for this task:
-
-This repository exists to design, validate, and eventually implement the final clean MergenVision video face-recognition architecture.
-
-The goal is not to build random code quickly.
-
-The goal is to satisfy the project requirements with the most optimized GPU-first architecture possible:
-
-```text
-GStreamer / DeepStream video hotpath
-  -> GPU decode
-  -> GPU preprocessing
-  -> TensorRT detector
-  -> GPU tracker / metadata tracker where possible
-  -> GPU crop / align
-  -> TensorRT recognizer
-  -> compact embedding / metadata crosses CPU boundary
-  -> Qdrant batch search
-  -> PostgreSQL metadata
-  -> MinIO video/crop/artifact storage
-```
-
-CPU is allowed for I/O, orchestration, metadata, DB/Qdrant/MinIO calls, JSON/report generation, and explicit debug/test fallback only.
-
-CPU is not allowed as the production video pixel hotpath.
+If any user prompt conflicts with this file, **ask for clarification** unless the user explicitly overrides a specific rule.
 
 ---
 
 ## 1. Repository Purpose
 
-This repo is for the new final MergenVision architecture.
+This repository is for the new final MergenVision production architecture.
 
 Primary goals:
 
-1. Research and choose the best detector and recognizer model stack.
-2. Validate model license, accuracy, TensorRT compatibility, batch behavior, and DeepStream/GStreamer compatibility.
-3. Design the final GStreamer / DeepStream GPU hotpath.
-4. Keep Qdrant as the vector source of truth.
-5. Avoid unreliable random online “batched” model files.
-6. Build trusted TensorRT engines from validated ONNX models.
-7. Prove performance with benchmarks before claiming optimization.
-8. Keep every important architectural decision documented.
+1. Design, validate, and implement the final GPU-first video face-recognition architecture.
+2. Research and choose the best detector / recognizer model stack.
+3. Validate model license, accuracy, TensorRT compatibility, batch behavior, and DeepStream/GStreamer compatibility.
+4. Build the production video hotpath on **GStreamer / NVIDIA DeepStream** with dynamic-batch TensorRT engines.
+5. Keep **Qdrant** as the vector source of truth and the identity-search source of truth.
+6. Avoid unreliable random online “batched” model files.
+7. Build trusted TensorRT engines from validated ONNX models.
+8. Prove performance with benchmarks before claiming optimization.
+9. Keep every important architectural decision documented before production backend code is written.
 
 This repo must not become a messy experiment dump.
-
----
-
-## 2. Hard Architecture Rules
-
-### 2.1 GPU Hotpath Rule
 
 The production video path must target:
 
@@ -166,38 +44,113 @@ compressed video
   -> PostgreSQL/MinIO persistence
 ```
 
-Allowed CPU work:
+---
 
-- file path handling
-- API/job orchestration
-- PostgreSQL metadata writes
-- Qdrant requests
-- MinIO upload/download
-- compact embedding transfer
-- track metadata
-- JSON result generation
-- benchmark report writing
-- explicit debug/test fallback
+## 2. Phase 0 Source-of-Truth Rule
 
-Forbidden as production path:
+Before any implementation, the agent must read and respect the Phase 0 planning report:
 
-- OpenCV CPU video decode
-- ffmpeg CPU frame extraction
-- decoded frame JPEG/PNG intermediates
-- CPU resize/letterbox/normalize as main path
-- CPU crop/align as main path
-- silent GPU decode failure -> CPU fallback
-- claiming “full GPU hotpath” without proving every stage
+```text
+/home/user/MergenVisionProd/phase0beforestarting.md
+```
 
-If GPU path fails, report the blocker. Do not silently downgrade.
+This report contains:
+
+- Source-code audit of all old and reference repositories.
+- Final target architecture (GStreamer/DeepStream, Qdrant, PostgreSQL, MinIO).
+- Model and TensorRT batching strategy.
+- Qdrant collection/search design.
+- API and database plans.
+- 34-checkpoint implementation roadmap.
+- Senior review questions.
+
+The agent must not contradict the decisions in `phase0beforestarting.md` without explicit user approval and a written ADR.
+
+Backend implementation must not start until the model validation gate passes.
 
 ---
 
-## 3. GStreamer / DeepStream Decision
+## 3. Mandatory Open-Source Reference Rule — Read Before Any Implementation
 
-The preferred final video hotpath is GStreamer / DeepStream.
+Before implementing, refactoring, installing, choosing a model, building a TensorRT engine, writing architecture docs, or making any technical decision, the agent must first inspect the local open-source reference list:
 
-Agent must research and design around:
+```text
+/home/user/MergenVisionProd/opensource/references.md
+```
+
+For compatibility, also check:
+
+```text
+/home/user/MergenVisionProd/opensource/referenses.md
+```
+
+This file is the repository’s local source-of-truth for approved open-source references, model candidates, DeepStream/GStreamer examples, TensorRT examples, Qdrant examples, and architecture patterns.
+
+The agent must not implement from its own assumptions before checking this file.
+
+Required workflow before implementation:
+
+1. Read `opensource/references.md`.
+2. Identify which references are relevant to the current task.
+3. Use DeepWiki / Exa / web search / Context7 to inspect those references.
+4. Compare the planned implementation against the reference patterns.
+5. Only then write code or final recommendations.
+
+If the file does not exist, stop and report:
+
+```text
+BLOCKER: opensource/references.md not found.
+```
+
+Do not continue with implementation until the user confirms whether to create it or proceed without it.
+
+For every task, the final response must include:
+
+```text
+OPEN_SOURCE_REFERENCE_CHECK:
+- opensource/references.md found:
+- opensource/referenses.md found:
+- references read:
+- relevant references selected:
+- DeepWiki checks:
+- Exa/web checks:
+- Context7 docs:
+- adopted patterns:
+- adapted patterns:
+- rejected patterns:
+- reason for differences:
+- final verdict: pass / partial / fail
+```
+
+No implementation checkpoint can be marked complete unless this reference check is done.
+
+If a task touches any of the following areas, reference checking is mandatory:
+
+- GStreamer / DeepStream
+- NVDEC / GPU video decode
+- TensorRT
+- SCRFD / RetinaFace / face detection
+- ArcFace / face recognition
+- model selection
+- ONNX export
+- TensorRT engine building
+- static vs dynamic batch
+- Qdrant vector search
+- PostgreSQL metadata schema
+- MinIO object storage
+- tracking / ByteTrack / DeepSORT / BoT-SORT / Norfair
+- video worker architecture
+- Docker / multi-GPU deployment
+- benchmark design
+- validation reports
+
+---
+
+## 4. GStreamer/DeepStream GPU Hotpath Rule
+
+The production video path must target a **GStreamer + NVIDIA DeepStream** GPU hotpath.
+
+The agent must research and design around:
 
 - `nvv4l2decoder`
 - `uridecodebin`
@@ -228,9 +181,34 @@ However:
 - ArcFace recognition batching is strongly preferred
 - Qdrant query must be batched at track-level where possible
 
+CPU is allowed for:
+
+- file path handling
+- API/job orchestration
+- PostgreSQL metadata writes
+- Qdrant requests
+- MinIO upload/download
+- compact embedding transfer
+- track metadata
+- JSON result generation
+- benchmark report writing
+- explicit debug/test fallback only
+
+CPU is **not allowed** as the production video pixel hotpath. Forbidden as production path:
+
+- OpenCV CPU video decode
+- ffmpeg CPU frame extraction
+- decoded frame JPEG/PNG intermediates
+- CPU resize/letterbox/normalize as main path
+- CPU crop/align as main path
+- silent GPU decode failure → CPU fallback
+- claiming “full GPU hotpath” without proving every stage
+
+If the GPU path fails, report the blocker. Do not silently downgrade.
+
 ---
 
-## 4. Qdrant Source of Truth Rule
+## 5. Qdrant Source-of-Truth Rule
 
 Qdrant remains the vector store and identity-search source of truth.
 
@@ -273,10 +251,56 @@ Forbidden in Qdrant payload:
 - image bytes
 - video bytes
 - crop bytes
+- raw 512-D embeddings
 
 ---
 
-## 5. Model Selection Rules
+## 6. FAISS GPU Limitation Rule
+
+FAISS GPU must not replace Qdrant as the production identity gallery.
+
+Allowed uses of FAISS GPU:
+
+- optional benchmark comparison against Qdrant
+- optional future local accelerator
+- local experimental cache
+
+If FAISS GPU is used in an experiment:
+
+- the experiment must be under `phase1/` or a clearly marked temporary directory
+- the result must not influence the production API contract
+- Qdrant must remain the source of truth for identity search in the production backend
+
+---
+
+## 7. CPU Boundary Rule
+
+CPU work is allowed only for:
+
+- file path handling
+- API/job orchestration
+- PostgreSQL metadata writes
+- Qdrant requests
+- MinIO upload/download
+- compact `[N, 512]` embedding transfer
+- track metadata / JSON result generation
+- benchmark report writing
+- explicit debug/test fallback
+
+CPU work is forbidden on the production video pixel hotpath:
+
+- no OpenCV/ffmpeg video decode as main path
+- no CPU resize/letterbox/normalize of decoded frames
+- no CPU crop/align of face crops
+- no full-frame CPU transfer before detection
+- no per-frame JPEG/PNG intermediates
+- no silent CPU fallback if NVDEC fails
+
+If a stage must use CPU, the agent must document the exact stage and the reason in the final response.
+
+---
+
+## 8. Model Selection and License Rule
 
 Do not use random online “batched SCRFD” or “batched ArcFace” models without provenance.
 
@@ -321,13 +345,22 @@ Do not assume “large model” means production-ready.
 
 Do not assume “batchable” means correct.
 
-All candidates must pass validation.
+All candidates must pass the validation gate.
+
+The first baseline stack to validate is the previously proven InsightFace buffalo_l stack:
+
+- `det_10g.onnx` — SCRFD 10G detector
+- `w600k_r50.onnx` — ArcFace R50 / WebFace600K recognizer
+
+This stack is the starting baseline because it was already used successfully in earlier MergenVision experiments. It is **not final** until the model validation gate passes. No model is final until it has passed every item of the model validation gate.
+
+`SCRFD_34G_KPS` and `ArcFace R100@Glint360K` are later accuracy candidates for comparison, not the initial default.
+
+If commercial use becomes a requirement, stop and switch to a verified commercial-friendly stack (e.g. RetinaFace-R50 + AuraFace-v1) after full re-validation.
 
 ---
 
-## 6. Static vs Dynamic Batch Rule
-
-Agent must understand and explain this correctly.
+## 9. Static vs Dynamic Batch Rule
 
 A static batch=1 engine:
 
@@ -375,9 +408,11 @@ Rules:
 - do not patch ONNX batch dimension blindly
 - if ONNX batch patching is attempted, validate numerically
 
+Static batch=1 engines are acceptable only as a temporary validation baseline, never as the final production performance target.
+
 ---
 
-## 7. Model Validation Gate
+## 10. Model Validation Gate Rule
 
 No model is accepted until it passes the validation gate.
 
@@ -416,34 +451,11 @@ detector output consistency if detector supports batch
 
 If batch position changes output unexpectedly, the model/engine/postprocess fails.
 
----
-
-## 8. Required Documents Before Backend Coding
-
-Before building the final backend, agent must produce and review these decision files.
-
-Minimum first decision file:
-
-```text
-projectchoices.md
-```
-
-Then, after review:
-
-```text
-MODEL_RESEARCH_REPORT.md
-MODEL_CANDIDATES_MATRIX.md
-GSTREAMER_DEEPSTREAM_QDRANT_ARCHITECTURE.md
-TENSORRT_BATCHING_AND_ENGINE_STRATEGY.md
-MODEL_VALIDATION_PLAN.md
-MODEL_SELECTION_REPORT.md
-```
-
 Backend implementation must not start until model and architecture decisions are validated.
 
 ---
 
-## 9. Old Repo / Reference Repo Inspection Rule
+## 11. Old Repo / Reference Repo Inspection Rule
 
 Before major decisions, inspect old references if available.
 
@@ -455,6 +467,7 @@ Current important paths:
 /home/user/Workspace/mergenvision/opensourcereferences/references.md
 /home/user/MergenVision
 /home/user/Demo/VideoFaceGpuLab
+/home/user/Workspace/MergenVisionCleanVersion
 ```
 
 Use them as references and lessons learned only.
@@ -477,13 +490,13 @@ If old paths do not exist, report honestly and continue.
 
 ---
 
-## 10. Compaction / New Session Reconstruction Rule
+## 12. Compaction / New Session Reconstruction Rule
 
 At the beginning of every new session, after context compaction, or when the agent is unsure, use `codebase-memory-mcp` if available.
 
 The agent must reconstruct state before acting.
 
-Required output:
+Required output at the start of every new/compacted session:
 
 ```text
 SESSION_RECONSTRUCTION:
@@ -491,8 +504,10 @@ SESSION_RECONSTRUCTION:
 - current task:
 - current phase:
 - source-of-truth docs read:
+- open-source references read:
 - old/reference repos checked:
-- projectchoices.md status:
+- phase0beforestarting.md status:
+- AGENTS.md status:
 - model research status:
 - model validation status:
 - GStreamer/DeepStream decision:
@@ -511,13 +526,13 @@ SESSION_RECONSTRUCTION:
 - files likely relevant for this task:
 ```
 
-If reconstruction fails, stop and ask the user.
+If the agent cannot reconstruct state, stop and ask the user.
 
 Do not continue from memory alone.
 
 ---
 
-## 11. Mandatory MCP / Tool Usage
+## 13. Mandatory MCP / Tool Usage
 
 For research, planning, architecture, model selection, and implementation tasks, use all relevant tools.
 
@@ -541,7 +556,7 @@ Forbidden:
 - `21st`
 - `https://21st.dev/api/mcp`
 
-Tool report required in final response:
+Tool report required in every final response:
 
 ```text
 TOOLS_USED:
@@ -572,9 +587,11 @@ TOOLS_USED:
   - what was learned:
 ```
 
+If a tool is skipped, explain why.
+
 ---
 
-## 12. Mandatory Skills
+## 14. Mandatory Skills
 
 Use and report these skills when relevant:
 
@@ -605,7 +622,7 @@ If a skill is skipped, explain why.
 
 ---
 
-## 13. Reference-First Rule
+## 15. Reference-First Implementation Rule
 
 Before coding or final recommendations, inspect references.
 
@@ -676,13 +693,13 @@ No checkpoint is complete without reference verification.
 
 ---
 
-## 14. No Arbitrary Coding Rule
+## 16. No Arbitrary Coding Rule
 
 Do not invent core infrastructure patterns from scratch when good official or open-source references exist.
 
 Before implementation:
 
-1. Read local repo docs.
+1. Read local repo docs (`AGENTS.md`, `phase0beforestarting.md`, `opensource/references.md`).
 2. Read old/reference repo patterns.
 3. Check DeepWiki.
 4. Check Context7 official docs.
@@ -693,17 +710,31 @@ Before implementation:
 
 Do not code directly from assumptions.
 
+### Layered architecture rule
+
+Use strict separation of concerns:
+
+| Layer | Owns | Must not |
+|---|---|---|
+| `app.api` routers | path/method, request parsing, dependency injection, single service call, response mapping, HTTP error mapping | SQLAlchemy queries, DB transactions, Qdrant/MinIO/TensorRT logic, business workflows |
+| `app.application` services | business workflow, transactions, validation, enrollment/identify orchestration, audit decisions | FastAPI import, HTTPException, raw TensorRT |
+| `app.repositories` | SQLAlchemy CRUD, queries, filtering, pagination | FastAPI, Qdrant/MinIO, business decisions |
+| `app.infrastructure` | TensorRT runtime, GPU decoders, detector/recognizer adapters, Qdrant adapter, MinIO adapter | business rules, SQLAlchemy domain logic |
+| `app.domain` | entities, enums, value objects, domain errors, id helpers, common rules | FastAPI, SQLAlchemy session, MinIO/Qdrant clients, TensorRT runtime |
+
 ---
 
-## 15. Implementation Approval Rule
+## 17. Implementation Approval Rule
 
 The agent must not implement code unless the user gives an explicit approval phrase.
 
-Examples:
+Allowed examples:
 
 ```text
-APPROVED — WRITE PROJECTCHOICES.md ONLY
-APPROVED — CREATE MODEL VALIDATION LAB ONLY
+APPROVED — START CHECKPOINT 1 REPO SKELETON AND GOVERNANCE ONLY
+APPROVED — START CHECKPOINT 2 MODEL SOURCE AND LICENSE INVENTORY ONLY
+APPROVED — START CHECKPOINT 3 PHASE 1 MODEL VALIDATION LAB ONLY
+APPROVED — START CHECKPOINT 4 PHASE 1 BENCHMARK DIRECTORY ONLY
 APPROVED — START TRUSTED MODEL DOWNLOAD + SHAPE INSPECTION ONLY
 APPROVED — START GSTREAMER/DEEPSTREAM MODEL PROTOTYPE ONLY
 APPROVED — START QDRANT BATCH SEARCH BENCHMARK ONLY
@@ -714,9 +745,13 @@ If approval is vague, ask for clarification.
 
 Do not expand scope.
 
+Do not start backend implementation without explicit approval.
+
+Do not start Phase 2 video routes/API until Phase 1 gates and model validation pass.
+
 ---
 
-## 16. Git Safety Rule
+## 18. Git Safety Rule
 
 Do not run:
 
@@ -736,7 +771,7 @@ Do not hide dirty working tree state.
 
 ---
 
-## 17. Docker / GPU Safety Rule
+## 19. Docker / GPU Safety Rule
 
 Do not kill unrelated GPU processes.
 
@@ -766,9 +801,18 @@ mergenvision-
 
 Avoid port/container/volume collisions with old repos.
 
+Do not build huge TensorRT dependency layers on every app change.
+
+Use a two-stage image design:
+
+- `mergenvision-gpu-base:latest` — CUDA, TensorRT, CuPy, DeepStream runtime, built rarely.
+- `mergenvision-api-gpu:latest` / `mergenvision-worker-gpu:latest` — `FROM` base, copy app source, fast rebuild.
+
+Mount `artifacts/` read-only at runtime. Do not copy giant engines/models into app image unless explicitly approved.
+
 ---
 
-## 18. Privacy / Security Rule
+## 20. Privacy / Security Rule
 
 Do not store raw national IDs.
 
@@ -784,17 +828,24 @@ Use:
 - Qdrant for embeddings + safe payload
 - MinIO for bytes/artifacts
 
-If national ID integration is needed later:
+If national ID integration is needed:
 
 - use `nationalIdHash`
 - use `nationalIdMasked`
 - use server-side pepper
 - never expose hash publicly
 - never put national ID in Qdrant
+- never log raw national ID
+
+Audit metadata must be safe.
+
+Do not print secrets from `.env`.
+
+Do not include access keys, passwords, or tokens in reports.
 
 ---
 
-## 19. Identity / Tracking Rules
+## 21. Identity / Tracking Rules
 
 These rules apply when video identity logic is implemented.
 
@@ -817,7 +868,7 @@ Predicted bbox rule:
 
 - predicted bbox is annotation/debug only
 - predicted bbox is not a real detection
-- predicted bbox is never recognition candidate
+- predicted bbox is never a recognition candidate
 - predicted bbox must have `recognitionEligible=false`
 
 Recognition rule:
@@ -829,9 +880,11 @@ Recognition rule:
 - conflicting votes become ambiguous
 - unknown quality face becomes real anonymous `FaceIdentity` if persisted
 
+Anonymous identities must be real `FaceIdentity` rows with Qdrant samples and MinIO crops.
+
 ---
 
-## 20. Performance Claim Rule
+## 22. Performance Claim Rule
 
 Do not claim:
 
@@ -874,7 +927,7 @@ status: proven
 
 ---
 
-## 21. Required Final Response Format
+## 23. Required Final Response Format
 
 Every agent response after a task must end with:
 
@@ -897,6 +950,20 @@ SESSION_RECONSTRUCTION:
 - old refs checked:
 - what is proven:
 - what is assumed:
+
+OPEN_SOURCE_REFERENCE_CHECK:
+- opensource/references.md found:
+- opensource/referenses.md found:
+- references read:
+- relevant references selected:
+- DeepWiki checks:
+- Exa/web checks:
+- Context7 docs:
+- adopted patterns:
+- adapted patterns:
+- rejected patterns:
+- reason for differences:
+- final verdict:
 
 TOOLS_USED:
 - codebase-memory-mcp:
@@ -935,7 +1002,7 @@ Do not omit this format.
 
 ---
 
-## 22. First Recommended Workflow
+## 24. First Recommended Workflow
 
 The recommended sequence for this repo is:
 
@@ -960,3 +1027,11 @@ The recommended sequence for this repo is:
 Do not skip ModelLab validation.
 
 Do not start backend before model and hotpath decisions are proven.
+
+The current checkpoint after governance completion is:
+
+```text
+APPROVED — START CHECKPOINT 2 MODEL SOURCE AND LICENSE INVENTORY ONLY
+```
+
+Do not start it unless the user explicitly gives that approval phrase.
